@@ -15,10 +15,19 @@ num_classes = 7
 
 
 
+# ##### #
+# Input #
+# ##### #
 
 
 # Data Layer
 # 67 neurons
+
+dataLayer = tf.placeholder(tf.float64, shape=[None, 67])
+
+data_weights = tf.Variable(tf.zeros([67, 256]))
+data_bias    = tf.Variable(tf.zeros([None, 256]))
+
 
 # LSTM Layer
 # 256 neuros
@@ -26,11 +35,25 @@ num_classes = 7
 # Fully Connected Layer
 # 128 neurons
 
+# fc1 = <connection to LSTM>
+fc1_weights = tf.Variable(tf.zeros[128, 128])
+fc1_bias    = tf.Variable(tf.zeros[None, 128])
+
 # Fully Connected Layer
 # 128  neurons
+
+# fc2 = <connection to fc1>
+fc2_weights = tf.Variable(tf.zeros[128, 64])
+fc2_bias    = tf.Variable(tf.zeros[None, 64])
 
 # Filly Connected Layer
 # 64 neurons
 
+# fc3 = <connection to fc2>
+fc3_weights = tf.Variable(tf.zeros[64, 7])
+fc3_bias    = tf.Variable(tf.zeros[None, 7])
+
 # Pose Estimate
 # 7 neurons
+
+estimate = tf.placeholder(tf.float64, shape=[None, 7])
