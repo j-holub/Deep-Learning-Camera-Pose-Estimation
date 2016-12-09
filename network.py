@@ -42,14 +42,14 @@ fc1_bias    = tf.Variable(tf.zeros[None, 128])
 # Fully Connected Layer
 # 128  neurons
 
-# fc2 = <connection to fc1>
+fc2 = tf.tanh(tf.matmul(fc1, fc1_weights) + fc1_bias)
 fc2_weights = tf.Variable(tf.zeros[128, 64])
 fc2_bias    = tf.Variable(tf.zeros[None, 64])
 
 # Filly Connected Layer
 # 64 neurons
 
-# fc3 = <connection to fc2>
+fc3 = tf.tanh(tf.matmul(fc2, fc2_weights) + fc2_bias)
 fc3_weights = tf.Variable(tf.zeros[64, 7])
 fc3_bias    = tf.Variable(tf.zeros[None, 7])
 
