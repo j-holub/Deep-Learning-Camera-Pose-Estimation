@@ -56,4 +56,5 @@ fc3_bias    = tf.Variable(tf.zeros[None, 7])
 # Pose Estimate
 # 7 neurons
 
+output = tf.matmul(fc3, fc3_weights) + fc3_bias
 estimate = tf.placeholder(tf.float64, shape=[None, 7])
