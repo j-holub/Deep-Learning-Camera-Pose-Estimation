@@ -1,5 +1,11 @@
 # Python Virtual Environment
 env/
 
+# Data Directory
+data/
+
 # Python Binaries
 *.pyc
+
+# Testscript
+test.py
