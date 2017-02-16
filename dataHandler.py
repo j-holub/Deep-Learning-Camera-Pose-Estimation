@@ -103,3 +103,8 @@ class DataHandler:
     # return type: bool
     def data_available():
         return self.batch_pointer < len(self.labels)
+
+    # returns the total number of training samples
+    # return type: int
+    def training_data_size(self):
+        return len(self.values)
