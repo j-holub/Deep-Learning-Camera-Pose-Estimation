@@ -11,11 +11,14 @@ import tensorflow as tf
 #
 #   Output Layer             7
 
-def network(input_size, time_steps):
+def network(input_tensor):
+
+    time_steps = int(input_tensor.get_shape()[1])
+    input_size = int(input_tensor.get_shape()[2])
 
     # Data Input Layer
     # 67 neurons
-    dataLayer = tf.placeholder(tf.float64, shape=[None, time_steps, input_size])
+    dataLayer = input_tensor
 
     # Permuting batch_size and n_steps
     dataLayer = tf.transpose(dataLayer, [1, 0, 2])
