@@ -77,8 +77,11 @@ class DataHandler:
 
 
     # Loads the next batch of training data according to the batch size
+    # parameters
+    #   data_identifier - how the data is called in the feed dict
+    #   label_identifier - how the label is called in the feed dict
     # return type: dict [data, labels]
-    def next_batch(self):
+    def next_batch(self, data_identifier, label_identifier):
         batch = {}
 
         # check if the batch is bigger than the remaining data
@@ -87,8 +90,8 @@ class DataHandler:
         else:
             upperbound = len(self.values)
 
-        batch["data"]   = self.values[self.batch_pointer : self.batch_pointer + self.batch_size]
-        batch["labels"] = self.labels[self.batch_pointer : self.batch_pointer + self.batch_size]
+        batch[data_identifier]   = self.values[self.batch_pointer : self.batch_pointer + self.batch_size]
+        batch[label_identifier] = self.labels[self.batch_pointer : self.batch_pointer + self.batch_size]
 
         self.batch_pointer += self.batch_size
 
@@ -101,7 +104,7 @@ class DataHandler:
 
     # check if there is still some data to load an process
     # return type: bool
-    def data_available():
+    def data_available(self):
         return self.batch_pointer < len(self.labels)
 
     # returns the total number of training samples
