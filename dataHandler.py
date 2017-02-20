@@ -1,3 +1,6 @@
+import numpy as np
+import tensorflow as tf
+
 
 class DataHandler:
 
@@ -29,6 +32,10 @@ class DataHandler:
         # temporary store the values of one messurement
         values = []
 
+        # label blacklist
+        # some datasets do not have enough measurements, these have to be ignored
+        blacklist = []
+
         # parse the file
         while(line != ""):
 
@@ -41,7 +48,11 @@ class DataHandler:
                 # sometimes there are too many meassurements
                 # this ensures that only 10 meassurements (6 values each)
                 # are taken
-                data[label] = values[:60]
+                # sometimes there are not enough meassurements, these have to be ignored
+                if(len(values[:60]) == 60):
+                    data[label] = values[:60]
+                else:
+                    blacklist.append(label)
                 values = []
             # this is almost always a line of <timestamp> m1 m2 m3 m4 m5 m6
             # sometimes it's a newline character
@@ -63,13 +74,22 @@ class DataHandler:
         for line in gt_lines:
             # Format: label d1 d2 d3 d4 d5 d6 d7
             line_split = line.split(' ')
+            # ground truth values (without label)
+            ground_truth = [float(value) for value in line_split[1:]]
             # this adds the gt to the meassurements for the network input as stated in the paper
-            data[int(line_split[0])].extend([float(value) for value in line_split[1:]])
+            label = int(line_split[0])
+            if(label not in blacklist):
+                data[label].extend(ground_truth)
+                # add the ground_truth to the labels
+                self.labels.append(np.asarray(ground_truth))
 
 
         # parse the information from the files into the label and value array
         for label in sorted(data.keys()):
-            self.labels.append(label)
+            # self.labels.append(label)
+
+
+            data[label] = np.asarray(data[label])
             self.values.append(data[label])
 
 
@@ -77,12 +97,8 @@ class DataHandler:
 
 
     # Loads the next batch of training data according to the batch size
-    # parameters
-    #   data_identifier - how the data is called in the feed dict
-    #   label_identifier - how the label is called in the feed dict
-    # return type: dict [data, labels]
-    def next_batch(self, data_identifier, label_identifier):
-        batch = {}
+    # return type: tuple of data and label lists
+    def next_batch(self):
 
         # check if the batch is bigger than the remaining data
         if(self.batch_pointer + self.batch_size <= len(self.labels)):
@@ -90,12 +106,12 @@ class DataHandler:
         else:
             upperbound = len(self.values)
 
-        batch[data_identifier]   = self.values[self.batch_pointer : self.batch_pointer + self.batch_size]
-        batch[label_identifier] = self.labels[self.batch_pointer : self.batch_pointer + self.batch_size]
+        data   = self.values[self.batch_pointer : self.batch_pointer + self.batch_size]
+        labels = self.labels[self.batch_pointer : self.batch_pointer + self.batch_size]
 
         self.batch_pointer += self.batch_size
 
-        return batch
+        return (data, labels)
 
     # resets the batch pointer to start anew
     # return type: void
