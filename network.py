@@ -32,7 +32,7 @@ learning_rate = 0.01
 # ####### #
 
 # input
-network_input = tf.placeholder(tf.float64, shape=[None, time_steps, input_size])
+network_input = tf.placeholder(tf.float64, shape=[None, input_size])
 
 # output from the network described in networkStructure.py
 output = networkStructure.network(network_input)
@@ -45,12 +45,12 @@ estimate = tf.placeholder(tf.float64, shape=[None, 7])
 
 
 # set up the data
-data = dataHandler.DataHandler('data/imu_output.txt', 'data/ground_truth.txt', batch_size)
+training_data = dataHandler.DataHandler('data/imu_output.txt', 'data/ground_truth.txt', batch_size)
 
 
 
 # cost function and optimization
-cost = tf.reduce_sum(tf.pow(output - estimate, 2)) / (2 * data.training_data_size())
+cost = tf.reduce_sum(tf.pow(output - estimate, 2)) / (2 * training_data.training_data_size())
 optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
 
 
@@ -63,13 +63,10 @@ with tf.Session() as sess:
 
     i = 0
 
-    while(data.data_available()):
+    while(training_data.data_available()):
 
-        data, labels = data.next_batch()
-        # print data
-        # print labels
+        data, labels = training_data.next_batch()
         sess.run(cost, {network_input: data, estimate: labels})
-        # print("test")
         i = i+1
         if(i % 10 == 0):
             print ("Step %i" % i)

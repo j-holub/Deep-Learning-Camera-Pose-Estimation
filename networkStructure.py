@@ -13,19 +13,21 @@ import tensorflow as tf
 
 def network(input_tensor):
 
-    time_steps = int(input_tensor.get_shape()[1])
-    input_size = int(input_tensor.get_shape()[2])
+    input_size = int(input_tensor.get_shape()[1])
 
     # Data Input Layer
     # 67 neurons
-    dataLayer = input_tensor
+    dataLayer = [input_tensor]
 
-    # Permuting batch_size and n_steps
-    dataLayer = tf.transpose(dataLayer, [1, 0, 2])
-    # Reshaping to (n_steps*batch_size, n_input)
-    dataLayer = tf.reshape(dataLayer, [-1, input_size])
-    # Split to get a list of 'n_steps' tensors of shape (batch_size, n_input)
-    dataLayer = tf.split(0, time_steps, dataLayer)
+    # # Permuting batch_size and n_steps
+    # dataLayer = tf.transpose(dataLayer, [1, 0, 2])
+    # # Reshaping to (n_steps*batch_size, n_input)
+    # dataLayer = tf.reshape(dataLayer, [-1, input_size])
+    # # Split to get a list of 'n_steps' tensors of shape (batch_size, n_input)
+    # dataLayer = tf.split(0, time_steps, dataLayer)
+
+    # print(input_tensor.get_shape())
+    print(dataLayer)
 
     # #### LSTM ####
 
