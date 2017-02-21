@@ -115,6 +115,13 @@ class DataHandler:
 
         return (data, labels)
 
+    def full_data(self):
+
+        data = np.reshape(self.values, [len(self.values), 67])
+        labels = np.reshape(self.labels, [len(self.labels), 7])
+
+        return (data, labels)
+
     # resets the batch pointer to start anew
     # return type: void
     def reset(self):
