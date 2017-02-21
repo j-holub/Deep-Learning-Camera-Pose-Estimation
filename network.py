@@ -21,7 +21,8 @@ time_steps = 1
 batch_size = 1
 
 # training epochs
-epochs = 1
+epochs = 100
+display_step = 10
 learning_rate = 0.01
 
 # --- Basic Setup --- #
@@ -61,20 +62,29 @@ init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
 
-    print("Starting training with %d training samples" % training_data.training_data_size())
+    print("Starting training with %d training samples and %d epochs" % (training_data.training_data_size(), epochs))
 
-    i = 0
-    while(training_data.data_available()):
+    for epoch in range(epochs):
 
-        data, labels = training_data.next_batch()
-        sess.run(optimizer, {network_input: data, estimate: labels})
-        i = i+1
-        if(i % 100 == 0):
-            print ("Step %i" % i)
+        # train with all the training data
+        while(training_data.data_available()):
+
+            data, labels = training_data.next_batch()
+            sess.run(optimizer, {network_input: data, estimate: labels})
+
+        # reset training data iterator
+        training_data.reset()
+
+        # display intermediate results
+        if(epoch % display_step == 0):
+            full_data, full_labels = training_data.full_data()
+            error = sess.run(cost, feed_dict={network_input: full_data, estimate: full_labels})
+            print("Epoch %d: %f" % (epoch, error))
+
 
     print("Finished training")
 
-    data, labels = training_data.full_data()
-    accuracy = sess.run(cost, feed_dict={network_input: data, estimate: labels})
+    full_data, full_labels = training_data.full_data()
+    error = sess.run(cost, feed_dict={network_input: full_data, estimate: full_labels})
 
-    print("Training Cost: %f" % accuracy)
+    print("Final Cost: %f" % error)
