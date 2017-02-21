@@ -134,16 +134,18 @@ class DataHandler:
         # check if the batch is bigger than the remaining data
         if(self.batch_pointer + self.batch_size <= len(self.training_ground_truth)):
             upperbound = self.batch_pointer + self.batch_size
+            temp_batch_size = self.batch_size
         else:
             upperbound = len(self.training_data)
+            temp_batch_size = upperbound - self.batch_pointer
 
         # data matrix
-        data   = self.training_data[self.batch_pointer : self.batch_pointer + self.batch_size]
-        data   = np.reshape(data, [self.batch_size, 67])
+        data   = self.training_data[self.batch_pointer : upperbound]
+        data   = np.reshape(data, [temp_batch_size, 67])
 
         # label matrix
-        labels = self.training_ground_truth[self.batch_pointer : self.batch_pointer + self.batch_size]
-        labels = np.reshape(labels, [self.batch_size, 7])
+        labels = self.training_ground_truth[self.batch_pointer : upperbound]
+        labels = np.reshape(labels, [temp_batch_size, 7])
 
         self.batch_pointer += self.batch_size
 

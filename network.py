@@ -18,7 +18,7 @@ num_classes = 7
 # process one at a time with the LSTM
 time_steps = 1
 # batch size
-batch_size = 1
+batch_size = 20
 
 # training epochs
 epochs = 100
