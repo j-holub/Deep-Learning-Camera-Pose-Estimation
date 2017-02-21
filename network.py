@@ -58,7 +58,7 @@ optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
 
 
 # initialize session
-init = tf.global_variables_initializer()
+init = tf.initialize_all_variables()
 
 # training loop
 with tf.Session() as sess:
