@@ -86,9 +86,6 @@ class DataHandler:
 
         # parse the information from the files into the label and value array
         for label in sorted(data.keys()):
-            # self.labels.append(label)
-
-
             data[label] = np.asarray(data[label])
             self.values.append(data[label])
 
@@ -97,7 +94,7 @@ class DataHandler:
 
 
     # Loads the next batch of training data according to the batch size
-    # return type: tuple of data and label lists
+    # return type: tuple of data and label matrix
     def next_batch(self):
 
         # check if the batch is bigger than the remaining data
@@ -106,8 +103,13 @@ class DataHandler:
         else:
             upperbound = len(self.values)
 
+        # data matrix
         data   = self.values[self.batch_pointer : self.batch_pointer + self.batch_size]
+        data   = np.reshape(data, [self.batch_size, 67])
+
+        # label matrix
         labels = self.labels[self.batch_pointer : self.batch_pointer + self.batch_size]
+        labels = np.reshape(labels, [self.batch_size, 7])
 
         self.batch_pointer += self.batch_size
 
