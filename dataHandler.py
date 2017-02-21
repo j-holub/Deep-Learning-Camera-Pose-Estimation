@@ -135,17 +135,17 @@ class DataHandler:
     def next_batch(self):
 
         # check if the batch is bigger than the remaining data
-        if(self.batch_pointer + self.batch_size <= len(self.labels)):
+        if(self.batch_pointer + self.batch_size <= len(self.training_ground_truth)):
             upperbound = self.batch_pointer + self.batch_size
         else:
-            upperbound = len(self.values)
+            upperbound = len(self.training_data)
 
         # data matrix
-        data   = self.values[self.batch_pointer : self.batch_pointer + self.batch_size]
+        data   = self.training_data[self.batch_pointer : self.batch_pointer + self.batch_size]
         data   = np.reshape(data, [self.batch_size, 67])
 
         # label matrix
-        labels = self.labels[self.batch_pointer : self.batch_pointer + self.batch_size]
+        labels = self.training_ground_truth[self.batch_pointer : self.batch_pointer + self.batch_size]
         labels = np.reshape(labels, [self.batch_size, 7])
 
         self.batch_pointer += self.batch_size
@@ -168,10 +168,10 @@ class DataHandler:
 
     # check if there is still some data to load an process
     # return type: bool
-    def data_available(self):
-        return self.batch_pointer < len(self.labels)
+    def training_data_available(self):
+        return self.batch_pointer < len(self.training_data)
 
     # returns the total number of training samples
     # return type: int
     def training_data_size(self):
-        return len(self.values)
+        return len(self.training_data)

@@ -67,7 +67,7 @@ with tf.Session() as sess:
     for epoch in range(epochs):
 
         # train with all the training data
-        while(training_data.data_available()):
+        while(training_data.training_data_available()):
 
             data, labels = training_data.next_batch()
             sess.run(optimizer, {network_input: data, estimate: labels})
