@@ -46,12 +46,12 @@ estimate = tf.placeholder(tf.float64, shape=[None, 7])
 
 
 # set up the data
-training_data = dataHandler.DataHandler('data/imu_output.txt', 'data/ground_truth.txt', batch_size)
+data = dataHandler.DataHandler('data/imu_output.txt', 'data/ground_truth.txt', batch_size)
 
 
 
 # cost function and optimization
-cost = tf.reduce_sum(tf.pow(output - estimate, 2)) / (2 * training_data.training_data_size())
+cost = tf.reduce_sum(tf.pow(output - estimate, 2)) / (2 * data.training_data_size())
 optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
 
 
@@ -62,29 +62,29 @@ init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
 
-    print("Starting training with %d training samples and %d epochs" % (training_data.training_data_size(), epochs))
+    print("Starting training with %d training samples and %d epochs" % (data.training_data_size(), epochs))
 
     for epoch in range(epochs):
 
         # train with all the training data
-        while(training_data.training_data_available()):
+        while(data.training_data_available()):
 
-            data, labels = training_data.next_batch()
-            sess.run(optimizer, {network_input: data, estimate: labels})
+            input_data, ground_truth = data.next_batch()
+            sess.run(optimizer, {network_input: input_data, estimate: ground_truth})
 
         # reset training data iterator
-        training_data.reset()
+        data.reset()
 
         # display intermediate results
         if(epoch % display_step == 0):
-            full_data, full_labels = training_data.full_training_data()
-            error = sess.run(cost, feed_dict={network_input: full_data, estimate: full_labels})
+            full_data, full_ground_truth = data.full_training_data()
+            error = sess.run(cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
             print("Epoch %d: %f" % (epoch, error))
 
 
     print("Finished training")
 
-    full_data, full_labels = training_data.full_data()
-    error = sess.run(cost, feed_dict={network_input: full_data, estimate: full_labels})
+    full_data, full_ground_truth = data.full_training_data()
+    error = sess.run(cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
 
     print("Final Cost: %f" % error)
