@@ -17,17 +17,10 @@ def network(input_tensor):
 
     # Data Input Layer
     # 67 neurons
+
+    # Has to be a list / sequence for the LSTM
     dataLayer = [input_tensor]
 
-    # # Permuting batch_size and n_steps
-    # dataLayer = tf.transpose(dataLayer, [1, 0, 2])
-    # # Reshaping to (n_steps*batch_size, n_input)
-    # dataLayer = tf.reshape(dataLayer, [-1, input_size])
-    # # Split to get a list of 'n_steps' tensors of shape (batch_size, n_input)
-    # dataLayer = tf.split(0, time_steps, dataLayer)
-
-    # print(input_tensor.get_shape())
-    print(dataLayer)
 
     # #### LSTM ####
 

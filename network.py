@@ -61,12 +61,20 @@ init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
 
-    i = 0
+    print("Starting training with %d training samples" % training_data.training_data_size())
 
+    i = 0
     while(training_data.data_available()):
 
         data, labels = training_data.next_batch()
-        sess.run(cost, {network_input: data, estimate: labels})
+        sess.run(optimizer, {network_input: data, estimate: labels})
         i = i+1
-        if(i % 10 == 0):
+        if(i % 100 == 0):
             print ("Step %i" % i)
+
+    print("Finished training")
+
+    data, labels = training_data.full_data()
+    accuracy = sess.run(cost, feed_dict={network_input: data, estimate: labels})
+
+    print("Training Cost: %f" % accuracy)
