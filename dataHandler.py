@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import tensorflow as tf
 
@@ -8,12 +9,23 @@ class DataHandler:
     def __init__(self, imu_output, ground_truth, batch_size):
 
         # member vars
-        self.values = []
-        self.labels = []
+        # training set
+        self.training_data = []
+        self.training_ground_truth = []
+
+        # validation set
+        self.validation_data = []
+        self.validation_ground_truth = []
+
 
         self.batch_size = batch_size
         self.batch_pointer = 0
 
+        # -------
+
+        # container to hold the read data
+        read_values       = []
+        read_ground_truth = []
 
         # dict to store the meassurements
         data = {}
@@ -79,22 +91,41 @@ class DataHandler:
             if(label not in blacklist):
                 data[label].extend(ground_truth)
                 # add the ground_truth to the labels
-                self.labels.append(np.asarray(ground_truth))
+                read_ground_truth.append(np.asarray(ground_truth))
 
 
         # parse the information from the files into the label and value array
         for label in sorted(data.keys()):
             data[label] = np.asarray(data[label])
-            self.values.append(data[label])
+            read_values.append(data[label])
 
         # values [n] has to correspond to labels [n+1]
         # pose prediction
 
         # drop the first
-        self.labels = self.labels[1:]
+        read_ground_truth = read_ground_truth[1:]
         # drop the last
-        self.values = self.values[:-1]
+        read_values = read_values[:-1]
 
+
+        # ####################### #
+        # test & validation split #
+        # ####################### #
+
+        # Split the data into train and validation set
+        trainingAmount = int(math.ceil((len(read_values) / 100.0) * 70))
+        print trainingAmount
+
+        # training set
+        self.training_data = read_values[0:trainingAmount]
+        self.training_ground_truth = read_ground_truth[0:trainingAmount]
+
+        # validation set
+        self.validation_data = read_values[trainingAmount:]
+        self.validation_ground_truth = read_ground_truth[trainingAmount:]
+
+        print(len(self.training_data))
+        print(len(self.training_ground_truth))
 
     # --------------------------------------------------------------------------
 
