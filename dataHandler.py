@@ -152,26 +152,52 @@ class DataHandler:
 
         return (data, labels)
 
-    # returns the full date and labels reshaped to (size, 67) and (size, 7)
-    # return type: (nparray(size, 67), nparray(size, 7))
-    def full_data(self):
-
-        data = np.reshape(self.values, [len(self.values), 67])
-        labels = np.reshape(self.labels, [len(self.labels), 7])
-
-        return (data, labels)
 
     # resets the batch pointer to start anew
     # return type: void
     def reset(self):
         self.batch_pointer = 0
 
+    # ------------- #
+    # Training Data #
+    # ------------- #
+
+    # returns the full training data and training ground truth
+    # return type: (nparray(size, 67), nparray(size, 7))
+    def full_training_data(self):
+
+        data = np.reshape(self.training_data, [len(self.training_data), 67])
+        labels = np.reshape(self.training_ground_truth, [len(self.training_ground_truth), 7])
+
+        return (data, labels)
+
+
     # check if there is still some data to load an process
     # return type: bool
     def training_data_available(self):
         return self.batch_pointer < len(self.training_data)
 
+
     # returns the total number of training samples
     # return type: int
     def training_data_size(self):
         return len(self.training_data)
+
+    # --------------- #
+    # Validation Data #
+    # --------------- #
+
+    # returns the full validation data and training ground truth
+    # return type: (nparray(size, 67), nparray(size, 7))
+    def full_validation_data(self):
+
+        data = np.reshape(self.validation_data, [len(self.validation_data), 67])
+        labels = np.reshape(self.validation_ground_truth, [len(self.validation_ground_truth), 7])
+
+        return (data, labels)
+
+
+    # returns the total number of validation samples
+    # return type: int
+    def validation_data_size(self):
+        return len(self.validation_data)

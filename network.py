@@ -77,7 +77,7 @@ with tf.Session() as sess:
 
         # display intermediate results
         if(epoch % display_step == 0):
-            full_data, full_labels = training_data.full_data()
+            full_data, full_labels = training_data.full_training_data()
             error = sess.run(cost, feed_dict={network_input: full_data, estimate: full_labels})
             print("Epoch %d: %f" % (epoch, error))
 
