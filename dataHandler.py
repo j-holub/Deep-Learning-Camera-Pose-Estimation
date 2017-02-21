@@ -114,7 +114,6 @@ class DataHandler:
 
         # Split the data into train and validation set
         trainingAmount = int(math.ceil((len(read_values) / 100.0) * 70))
-        print trainingAmount
 
         # training set
         self.training_data = read_values[0:trainingAmount]
@@ -124,8 +123,6 @@ class DataHandler:
         self.validation_data = read_values[trainingAmount:]
         self.validation_ground_truth = read_ground_truth[trainingAmount:]
 
-        print(len(self.training_data))
-        print(len(self.training_ground_truth))
 
     # --------------------------------------------------------------------------
 

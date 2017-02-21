@@ -22,7 +22,9 @@ batch_size = 1
 
 # training epochs
 epochs = 100
+# steps how often the intermediate result should be output
 display_step = 10
+# lerning rate for the gradient descent
 learning_rate = 0.01
 
 # --- Basic Setup --- #
@@ -75,16 +77,16 @@ with tf.Session() as sess:
         # reset training data iterator
         data.reset()
 
-        # display intermediate results
+        # display intermediate results on the validation test set
         if(epoch % display_step == 0):
-            full_data, full_ground_truth = data.full_training_data()
-            error = sess.run(cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
-            print("Epoch %d: %f" % (epoch, error))
+            full_data, full_ground_truth = data.full_validation_data()
+            training_cost = sess.run(cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
+            print("Epoch %d: %f" % (epoch, training_cost))
 
 
     print("Finished training")
 
-    full_data, full_ground_truth = data.full_training_data()
-    error = sess.run(cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
+    full_data, full_ground_truth = data.full_validation_data()
+    training_cost = sess.run(cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
 
-    print("Final Cost: %f" % error)
+    print("Final Cost: %f" % training_cost)
