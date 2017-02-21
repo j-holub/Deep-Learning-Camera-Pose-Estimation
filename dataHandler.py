@@ -1,7 +1,6 @@
 import numpy as np
 import tensorflow as tf
 
-
 class DataHandler:
 
 
@@ -23,8 +22,6 @@ class DataHandler:
         # prepare the imu output #
         # ###################### #
 
-
-
         # open the file
         imu_file = open(imu_output, 'r')
         line = imu_file.readline()
@@ -39,7 +36,6 @@ class DataHandler:
         # parse the file
         while(line != ""):
 
-            line = imu_file.readline()
 
             # if image was found in the line it marks the end of the meassurement squence
             # for that image
@@ -61,6 +57,8 @@ class DataHandler:
                 # add all numerical values (except the timestamp) to the value list
                 values.extend([float(value) for value in line_split[1:] if value != ''])
 
+            # read the next line
+            line = imu_file.readline()
 
 
         # ############################# #
@@ -89,6 +87,14 @@ class DataHandler:
             data[label] = np.asarray(data[label])
             self.values.append(data[label])
 
+        # values [n] has to correspond to labels [n+1]
+        # pose prediction
+
+        # drop the first
+        self.labels = self.labels[1:]
+        # drop the last
+        self.values = self.values[:-1]
+
 
     # --------------------------------------------------------------------------
 
@@ -115,6 +121,8 @@ class DataHandler:
 
         return (data, labels)
 
+    # returns the full date and labels reshaped to (size, 67) and (size, 7)
+    # return type: (nparray(size, 67), nparray(size, 7))
     def full_data(self):
 
         data = np.reshape(self.values, [len(self.values), 67])
