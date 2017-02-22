@@ -48,11 +48,19 @@ class DataHandler:
         # parse the file
         while(line != ""):
 
+            # get rid of line breaks
+            line = line.strip()
 
             # if image was found in the line it marks the end of the meassurement squence
             # for that image
             if('image' in line):
-                label = int(line[5:].strip())
+                # old data case
+                if(len(line.split(' ')) == 1):
+                    label = int(line[5:].strip())
+                # new data case
+                else:
+                    label = int(line.split(' ')[1])
+
                 # sometimes there are too many meassurements
                 # this ensures that only 10 meassurements (6 values each)
                 # are taken
@@ -66,8 +74,15 @@ class DataHandler:
             # sometimes it's a newline character
             elif(line != '\n'):
                 line_split = line.split(' ')
-                # add all numerical values (except the timestamp) to the value list
-                values.extend([float(value) for value in line_split[1:] if value != ''])
+
+                # new data case
+                if(line_split[0] == 'imu'):
+                    # add all numerical values (except the timestamp) to the value list
+                    values.extend([float(value) for value in line_split[2:] if value != ''])
+                # old data case
+                else:
+                    # add all numerical values (except the timestamp) to the value list
+                    values.extend([float(value) for value in line_split[1:] if value != ''])
 
             # read the next line
             line = imu_file.readline()
