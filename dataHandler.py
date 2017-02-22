@@ -203,6 +203,11 @@ class DataHandler:
     def reset(self):
         self.batch_pointer = 0
 
+    # returns the size of the data (#meassurements*6 + 7)
+    # return type: int
+    def input_size(self):
+        return self.input_size+7
+
     # ------------- #
     # Training Data #
     # ------------- #
