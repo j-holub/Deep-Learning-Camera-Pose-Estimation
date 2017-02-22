@@ -1,6 +1,12 @@
 # TensorFlow
 import tensorflow as tf
 
+# Argument parser
+import argparse
+# filesystem stuf
+import os
+import sys
+
 # DataHandler
 import dataHandler
 # Network
@@ -29,13 +35,45 @@ learning_rate = 0.01
 
 # --- Basic Setup --- #
 
+
+# ################ #
+# Argument Parsing #
+# ################ #
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("IMU_Data", help="File holding the IMU measurements")
+parser.add_argument("Ground_Truth", help="File holding the ground truth data")
+parser.add_argument("--epochs", "-ep", default=100, help="Number of epochs to train")
+parser.add_argument("--display_step", "-ds", default=10, help="How often intermediate results should be output")
+parser.add_argument("--batch_size", "-bs", default=20, help="Batch Size for training")
+
+arguments = parser.parse_args()
+
+# check if the IMU file exists
+if(not os.path.exists(arguments.IMU_Data)):
+    print("'%s' not found" % arguments.IMU_Data)
+    sys.exit()
+
+# check if the Ground Truth file exists
+if(not os.path.exists(arguments.Ground_Truth)):
+    print("'%s' not found" % arguments.Ground_Truth)
+    sys.exit()
+
+
+# parse optional args
+epochs = int(arguments.epochs)
+display_step = int(arguments.display_step)
+batch_size = int(arguments.batch_size)
+
+
 # #### #
 # Data #
 # #### #
 
 # set up the data
 # data = dataHandler.DataHandler('data/imu_output.txt', 'data/ground_truth.txt', batch_size)
-data = dataHandler.DataHandler('data/sequences/seq1/seq_file.txt', 'data/sequences/seq1/ground_truth.txt', batch_size)
+data = dataHandler.DataHandler(arguments.IMU_Data, arguments.Ground_Truth, batch_size)
 
 
 # ####### #
