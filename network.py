@@ -60,7 +60,7 @@ optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
 validation_cost = tf.reduce_sum(tf.pow(output - estimate, 2)) / (2 * data.validation_data_size())
 
 # initialize session
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 
 # training loop
 with tf.Session() as sess:
