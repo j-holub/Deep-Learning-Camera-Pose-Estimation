@@ -29,13 +29,21 @@ learning_rate = 0.01
 
 # --- Basic Setup --- #
 
+# #### #
+# Data #
+# #### #
+
+# set up the data
+# data = dataHandler.DataHandler('data/imu_output.txt', 'data/ground_truth.txt', batch_size)
+data = dataHandler.DataHandler('data/sequences/seq1/seq_file.txt', 'data/sequences/seq1/ground_truth.txt', batch_size)
+
 
 # ####### #
 # Network #
 # ####### #
 
 # input
-network_input = tf.placeholder(tf.float64, shape=[None, input_size])
+network_input = tf.placeholder(tf.float64, shape=[None, data.input_size()])
 
 # output from the network described in networkStructure.py
 output = networkStructure.network(network_input)
@@ -46,10 +54,6 @@ estimate = tf.placeholder(tf.float64, shape=[None, 7])
 
 # --- network --- #
 
-
-# set up the data
-# data = dataHandler.DataHandler('data/sequences/seq1/seq_file.txt', 'data/sequences/seq1/ground_truth.txt', batch_size)
-data = dataHandler.DataHandler('data/imu_output.txt', 'data/ground_truth.txt', batch_size)
 
 
 
