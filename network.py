@@ -72,7 +72,6 @@ batch_size = int(arguments.batch_size)
 # #### #
 
 # set up the data
-# data = dataHandler.DataHandler('data/imu_output.txt', 'data/ground_truth.txt', batch_size)
 data = dataHandler.DataHandler(arguments.IMU_Data, arguments.Ground_Truth, batch_size)
 
 
@@ -109,7 +108,7 @@ init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
 
-    print("Starting training with %d training samples and %d epochs" % (data.training_data_size(), epochs))
+    print("Starting training with %d training samples, %d epochs and a batch size of %d" % (data.training_data_size(), epochs, batch_size))
 
     for epoch in range(epochs):
 
