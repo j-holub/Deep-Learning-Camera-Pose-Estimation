@@ -48,6 +48,7 @@ estimate = tf.placeholder(tf.float64, shape=[None, 7])
 
 
 # set up the data
+# data = dataHandler.DataHandler('data/sequences/seq1/seq_file.txt', 'data/sequences/seq1/ground_truth.txt', batch_size)
 data = dataHandler.DataHandler('data/imu_output.txt', 'data/ground_truth.txt', batch_size)
 
 

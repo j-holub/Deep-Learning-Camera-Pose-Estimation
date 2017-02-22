@@ -23,7 +23,7 @@ class DataHandler:
 
 
         # the average number of measurements per data
-        self.input_size = 1
+        self.avrg_number_of_measurements = 1
 
         # -------
 
@@ -93,7 +93,7 @@ class DataHandler:
         # get the average number of measurements to detect which
         # values to keep
         measurement_sizes = [len(data[label])/6 for label in data.keys()]
-        self.input_size = int(np.around(np.mean(measurement_sizes)) * 6)
+        self.avrg_number_of_measurements = int(np.around(np.mean(measurement_sizes)) * 6)
 
 
         # ############################# #
@@ -135,16 +135,14 @@ class DataHandler:
         values = []
         ground_truth = []
 
-        print self.input_size
-
         # remove entries that are longer or shoter than the average
         for i in range(len(read_values)):
             # only use measurements with enough values
-            if(len(read_values[i])-7 >= self.input_size):
+            if(len(read_values[i])-7 >= self.avrg_number_of_measurements):
 
                 # trim the array if it is too long, leaving the last 7 (past pose) in tact
-                if(len(read_values[i])-7 > self.input_size):
-                    delete_indeces = np.arange(len(read_values[i]) - self.input_size - 7) + self.input_size
+                if(len(read_values[i])-7 > self.avrg_number_of_measurements):
+                    delete_indeces = np.arange(len(read_values[i]) - self.avrg_number_of_measurements - 7) + self.avrg_number_of_measurements
                     read_values[i] = np.delete(read_values[i], delete_indeces)
 
                 # append them
@@ -187,7 +185,7 @@ class DataHandler:
 
         # data matrix
         data   = self.training_data[self.batch_pointer : upperbound]
-        data   = np.reshape(data, [temp_batch_size, 67])
+        data   = np.reshape(data, [temp_batch_size, self.avrg_number_of_measurements+7])
 
         # label matrix
         labels = self.training_ground_truth[self.batch_pointer : upperbound]
@@ -206,7 +204,7 @@ class DataHandler:
     # returns the size of the data (#meassurements*6 + 7)
     # return type: int
     def input_size(self):
-        return self.input_size+7
+        return self.avrg_number_of_measurements+7
 
     # ------------- #
     # Training Data #
@@ -216,7 +214,7 @@ class DataHandler:
     # return type: (nparray(size, 67), nparray(size, 7))
     def full_training_data(self):
 
-        data = np.reshape(self.training_data, [len(self.training_data), 67])
+        data = np.reshape(self.training_data, [len(self.training_data), self.avrg_number_of_measurements+7])
         labels = np.reshape(self.training_ground_truth, [len(self.training_ground_truth), 7])
 
         return (data, labels)
@@ -241,7 +239,7 @@ class DataHandler:
     # return type: (nparray(size, 67), nparray(size, 7))
     def full_validation_data(self):
 
-        data = np.reshape(self.validation_data, [len(self.validation_data), 67])
+        data = np.reshape(self.validation_data, [len(self.validation_data), self.avrg_number_of_measurements+7])
         labels = np.reshape(self.validation_ground_truth, [len(self.validation_ground_truth), 7])
 
         return (data, labels)
