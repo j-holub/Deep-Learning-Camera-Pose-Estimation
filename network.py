@@ -56,6 +56,8 @@ data = dataHandler.DataHandler('data/imu_output.txt', 'data/ground_truth.txt', b
 cost = tf.reduce_sum(tf.pow(output - estimate, 2)) / (2 * data.training_data_size())
 optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
 
+# cost for the validation set
+validation_cost = tf.reduce_sum(tf.pow(output - estimate, 2)) / (2 * data.validation_data_size())
 
 # initialize session
 init = tf.initialize_all_variables()
@@ -80,13 +82,14 @@ with tf.Session() as sess:
         # display intermediate results on the validation test set
         if(epoch % display_step == 0):
             full_data, full_ground_truth = data.full_validation_data()
-            training_cost = sess.run(cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
+            training_cost = sess.run(validation_cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
             print("Epoch %d: %f" % (epoch, training_cost))
 
 
     print("Finished training")
 
+    # test it on the validation set
     full_data, full_ground_truth = data.full_validation_data()
-    training_cost = sess.run(cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
+    training_cost = sess.run(validation_cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
 
     print("Final Cost: %f" % training_cost)
