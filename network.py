@@ -62,9 +62,13 @@ if(not os.path.exists(arguments.Ground_Truth)):
 
 
 # parse optional args
-epochs = int(arguments.epochs)
-display_step = int(arguments.display_step)
-batch_size = int(arguments.batch_size)
+try:
+    epochs = int(arguments.epochs)
+    display_step = int(arguments.display_step)
+    batch_size = int(arguments.batch_size)
+except ValueError as e:
+    print("Epochs, Display Step and Batch Size have to be postitve integral numbers")
+    sys.exit()
 
 
 # #### #
