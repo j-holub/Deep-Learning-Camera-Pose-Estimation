@@ -21,6 +21,10 @@ class DataHandler:
         self.batch_size = batch_size
         self.batch_pointer = 0
 
+
+        # the average number of measurements per data
+        self.input_size = 1
+
         # -------
 
         # container to hold the read data
@@ -61,15 +65,12 @@ class DataHandler:
                 else:
                     label = int(line.split(' ')[1])
 
-                # sometimes there are too many meassurements
-                # this ensures that only 10 meassurements (6 values each)
-                # are taken
-                # sometimes there are not enough meassurements, these have to be ignored
-                if(len(values[:60]) == 60):
-                    data[label] = values[:60]
-                else:
-                    blacklist.append(label)
+                # store all the read data
+                data[label] = values
+
+                # reset buffer
                 values = []
+
             # this is almost always a line of <timestamp> m1 m2 m3 m4 m5 m6
             # sometimes it's a newline character
             elif(line != '\n'):
@@ -86,6 +87,13 @@ class DataHandler:
 
             # read the next line
             line = imu_file.readline()
+
+
+
+        # get the average number of measurements to detect which
+        # values to keep
+        measurement_sizes = [len(data[label])/6 for label in data.keys()]
+        self.input_size = int(np.around(np.mean(measurement_sizes)) * 6)
 
 
         # ############################# #
@@ -106,13 +114,14 @@ class DataHandler:
             if(label not in blacklist):
                 data[label].extend(ground_truth)
                 # add the ground_truth to the labels
-                read_ground_truth.append(np.asarray(ground_truth))
+                read_ground_truth.append(ground_truth)
 
 
         # parse the information from the files into the label and value array
         for label in sorted(data.keys()):
             data[label] = np.asarray(data[label])
             read_values.append(data[label])
+
 
         # values [n] has to correspond to labels [n+1]
         # pose prediction
@@ -123,20 +132,42 @@ class DataHandler:
         read_values = read_values[:-1]
 
 
+        values = []
+        ground_truth = []
+
+        print self.input_size
+
+        # remove entries that are longer or shoter than the average
+        for i in range(len(read_values)):
+            # only use measurements with enough values
+            if(len(read_values[i])-7 >= self.input_size):
+
+                # trim the array if it is too long, leaving the last 7 (past pose) in tact
+                if(len(read_values[i])-7 > self.input_size):
+                    delete_indeces = np.arange(len(read_values[i]) - self.input_size - 7) + self.input_size
+                    read_values[i] = np.delete(read_values[i], delete_indeces)
+
+                # append them
+                values.append(read_values[i])
+                ground_truth.append(read_ground_truth[i])
+
+
+
+
         # ####################### #
         # test & validation split #
         # ####################### #
 
         # Split the data into train and validation set
-        trainingAmount = int(math.ceil((len(read_values) / 100.0) * 70))
+        trainingAmount = int(math.ceil((len(values) / 100.0) * 70))
 
         # training set
-        self.training_data = read_values[0:trainingAmount]
-        self.training_ground_truth = read_ground_truth[0:trainingAmount]
+        self.training_data = values[0:trainingAmount]
+        self.training_ground_truth = ground_truth[0:trainingAmount]
 
         # validation set
-        self.validation_data = read_values[trainingAmount:]
-        self.validation_ground_truth = read_ground_truth[trainingAmount:]
+        self.validation_data = values[trainingAmount:]
+        self.validation_ground_truth = ground_truth[trainingAmount:]
 
 
     # --------------------------------------------------------------------------
