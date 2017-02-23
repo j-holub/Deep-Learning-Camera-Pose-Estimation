@@ -45,9 +45,7 @@ class DataHandler:
         # temporary store the values of one messurement
         values = []
 
-        # label blacklist
-        # some datasets do not have enough measurements, these have to be ignored
-        blacklist = []
+
 
         # parse the file
         while(line != ""):
@@ -66,7 +64,7 @@ class DataHandler:
                     label = int(line.split(' ')[1])
 
                 # store all the read data
-                data[label] = values
+                read_values.append(np.asarray(values))
 
                 # reset buffer
                 values = []
@@ -92,8 +90,9 @@ class DataHandler:
 
         # get the average number of measurements to detect which
         # values to keep
-        measurement_sizes = [len(data[label])/6 for label in data.keys()]
+        measurement_sizes = [(len(measurement)/6) for measurement in read_values]
         self.avrg_number_of_measurements = int(np.around(np.mean(measurement_sizes)) * 6)
+
 
 
         # ############################# #
@@ -109,31 +108,32 @@ class DataHandler:
             line_split = line.split(' ')
             # ground truth values (without label)
             ground_truth = [float(value) for value in line_split[1:]]
-            # this adds the gt to the meassurements for the network input as stated in the paper
-            label = int(line_split[0])
-            if(label not in blacklist):
-                data[label].extend(ground_truth)
-                # add the ground_truth to the labels
-                read_ground_truth.append(ground_truth)
+            # add the ground_truth to the labels
+            read_ground_truth.append(np.asarray(ground_truth))
 
 
-        # parse the information from the files into the label and value array
-        for label in sorted(data.keys()):
-            data[label] = np.asarray(data[label])
-            read_values.append(data[label])
 
+        # ################ #
+        # Process the Data #
+        # ################ #
 
         # values [n] has to correspond to labels [n+1]
         # pose prediction
 
         # drop the first
+        read_values = read_values[1:]
+
+        # this will add the i-1-th ground truth to the t-th value
+        for i in range(len(read_values)):
+            read_values[i] = np.append(read_values[i], read_ground_truth[i])
+
+
+        # drop the first since it can't be predicted
         read_ground_truth = read_ground_truth[1:]
-        # drop the last
-        read_values = read_values[:-1]
 
 
-        values = []
-        ground_truth = []
+        read_values_filtered = []
+        read_ground_truth_filtered = []
 
         # remove entries that are longer or shoter than the average
         for i in range(len(read_values)):
@@ -145,10 +145,9 @@ class DataHandler:
                     delete_indeces = np.arange(len(read_values[i]) - self.avrg_number_of_measurements - 7) + self.avrg_number_of_measurements
                     read_values[i] = np.delete(read_values[i], delete_indeces)
 
-                # append them
-                values.append(read_values[i])
-                ground_truth.append(read_ground_truth[i])
-
+                # append them to  the filtered version
+                read_values_filtered.append(read_values[i])
+                read_ground_truth_filtered.append(read_ground_truth[i])
 
 
 
@@ -157,18 +156,20 @@ class DataHandler:
         # ####################### #
 
         # Split the data into train and validation set
-        trainingAmount = int(math.ceil((len(values) / 100.0) * 70))
+        trainingAmount = int(math.ceil((len(read_values_filtered) / 100.0) * 70))
 
         # training set
-        self.training_data = values[0:trainingAmount]
-        self.training_ground_truth = ground_truth[0:trainingAmount]
+        self.training_data = read_values_filtered[0:trainingAmount]
+        self.training_ground_truth = read_ground_truth_filtered[0:trainingAmount]
 
         # validation set
-        self.validation_data = values[trainingAmount:]
-        self.validation_ground_truth = ground_truth[trainingAmount:]
+        self.validation_data = read_values_filtered[trainingAmount:]
+        self.validation_ground_truth = read_ground_truth_filtered[trainingAmount:]
 
 
     # --------------------------------------------------------------------------
+
+
 
 
     # Loads the next batch of training data according to the batch size
