@@ -128,7 +128,7 @@ with tf.Session() as sess:
         # display intermediate results on the validation test set
         if(epoch % display_step == 0):
             full_data, full_ground_truth = data.full_training_data()
-            training_cost = sess.run(cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
+            _, training_cost = sess.run([optimizer, cost], feed_dict={network_input: full_data, estimate: full_ground_truth})
             print("Epoch %d: %f" % (epoch, training_cost))
 
 
@@ -136,6 +136,6 @@ with tf.Session() as sess:
 
     # test it on the validation set
     full_data, full_ground_truth = data.full_validation_data()
-    training_cost = sess.run(validation_cost, feed_dict={network_input: full_data, estimate: full_ground_truth})
+    _, training_cost = sess.run([optimizer, validation_cost], feed_dict={network_input: full_data, estimate: full_ground_truth})
 
     print("Final Cost: %f" % training_cost)
