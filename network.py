@@ -47,6 +47,7 @@ parser.add_argument("Ground_Truth", help="File holding the ground truth data")
 parser.add_argument("--epochs", "-ep", default=100, help="Number of epochs to train")
 parser.add_argument("--display_step", "-ds", default=10, help="How often intermediate results should be output")
 parser.add_argument("--batch_size", "-bs", default=20, help="Batch Size for training")
+parser.add_argument("--output", "-o")
 
 arguments = parser.parse_args()
 
@@ -69,6 +70,16 @@ try:
 except ValueError as e:
     print("Epochs, Display Step and Batch Size have to be postitve integral numbers")
     sys.exit()
+
+
+if(arguments.output):
+    # base path
+    path = os.path.dirname(arguments.output)
+    # create the path if it does not exist
+    if(not os.path.exists(path)):
+        os.mkdir(path)
+
+    output_file = open(arguments.output, "w")
 
 
 # #### #
@@ -129,7 +140,11 @@ with tf.Session() as sess:
         if(epoch % display_step == 0):
             full_data, full_ground_truth = data.full_training_data()
             _, training_cost = sess.run([optimizer, cost], feed_dict={network_input: full_data, estimate: full_ground_truth})
-            print("Epoch %d: %f" % (epoch, training_cost))
+            output_string = "Epoch %d: %f" % (epoch, training_cost)
+            print(output_string)
+            if(arguments.output):
+                output_file.write(output_string)
+                output_file.write("\n")
 
 
     print("Finished training")
@@ -138,4 +153,8 @@ with tf.Session() as sess:
     full_data, full_ground_truth = data.full_validation_data()
     _, training_cost = sess.run([optimizer, validation_cost], feed_dict={network_input: full_data, estimate: full_ground_truth})
 
-    print("Final Cost: %f" % training_cost)
+    output_string = "Final Cost: %f" % training_cost
+    print(output_string)
+    if(arguments.output):
+        output_file.write(output_string)
+        output_file.close()
