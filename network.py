@@ -124,6 +124,9 @@ with tf.Session() as sess:
     sess.run(init)
 
     print("Starting training with %d training samples, %d epochs and a batch size of %d" % (data.training_data_size(), epochs, batch_size))
+    print("Epoch: Training Cost, Validation Cost")
+
+    output_file.write("Epoch, Training Cost, Validation Cost")
 
     for epoch in range(epochs):
 
@@ -136,25 +139,18 @@ with tf.Session() as sess:
         # reset training data iterator
         data.reset()
 
-        # display intermediate results on the validation test set
+        # display intermediate results on the training and the validation set
         if(epoch % display_step == 0):
+            # complete training data
             full_data, full_ground_truth = data.full_training_data()
-            _, training_cost = sess.run([optimizer, cost], feed_dict={network_input: full_data, estimate: full_ground_truth})
-            output_string = "Epoch %d: %f" % (epoch, training_cost)
-            print(output_string)
+            # comlete validation data
+            full_validation_data, full_validation_ground_truth = data.full_validation_data()
+            _, training_cost   = sess.run([optimizer, cost], feed_dict={network_input: full_data, estimate: full_ground_truth})
+            _, validation_test_cost = sess.run([optimizer, validation_cost], feed_dict={network_input: full_validation_data, estimate: full_validation_ground_truth})
+            print("%d: %f, %f" % (epoch, training_cost, validation_test_cost))
             if(arguments.output):
-                output_file.write(output_string)
+                output_file.write("%d, %f, %f" % (epoch, training_cost, validation_test_cost))
                 output_file.write("\n")
 
 
     print("Finished training")
-
-    # test it on the validation set
-    full_data, full_ground_truth = data.full_validation_data()
-    _, training_cost = sess.run([optimizer, validation_cost], feed_dict={network_input: full_data, estimate: full_ground_truth})
-
-    output_string = "Final Cost: %f" % training_cost
-    print(output_string)
-    if(arguments.output):
-        output_file.write(output_string)
-        output_file.close()
