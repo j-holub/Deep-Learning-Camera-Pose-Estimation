@@ -126,7 +126,7 @@ with tf.Session() as sess:
     print("Starting training with %d training samples, %d epochs and a batch size of %d" % (data.training_data_size(), epochs, batch_size))
     print("Epoch: Training Cost, Validation Cost")
 
-    output_file.write("Epoch, Training Cost, Validation Cost")
+    output_file.write("Epoch, Training Cost, Validation Cost\n")
 
     for epoch in range(epochs):
 
@@ -149,8 +149,7 @@ with tf.Session() as sess:
             _, validation_test_cost = sess.run([optimizer, validation_cost], feed_dict={network_input: full_validation_data, estimate: full_validation_ground_truth})
             print("%d: %f, %f" % (epoch, training_cost, validation_test_cost))
             if(arguments.output):
-                output_file.write("%d, %f, %f" % (epoch, training_cost, validation_test_cost))
-                output_file.write("\n")
+                output_file.write("%d, %f, %f\n" % (epoch, training_cost, validation_test_cost))
 
 
     print("Finished training")
