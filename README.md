@@ -19,9 +19,29 @@ python network.py <imu_output> <ground_truth>
 | Option         | Short Version | Type    | Meaning                                                               |
 |----------------|---------------|---------|-----------------------------------------------------------------------|
 | --batch-size   | -bs           | Integer | The Batch Size                                                        |
-| --display-step | -ds           | Integer | How often the intermediate results should be output. Each ds-th epoch |
+| --display-step | -ds           | Integer | How often the intermediate results should be output. Each **ds-th** epoch |
 | --epochs       | -ep           | Integer | How many epochs to train                                              |
 | --output       | -o            | String  | File to write the output to                                           |
+
+
+# Plot Results
+
+There is a script to plot the results called **plot_results.py** inside the *Scripts* folder.
+
+It can plot the output files by simply calling
+
+```
+python plot_results.py <outputfile>
+```
+
+## Options
+
+| Option            | Short Version | Type   | Meaning                                                                   |
+|-------------------|---------------|--------|---------------------------------------------------------------------------|
+| --no-display      | -nd           | Flag   | Does not display the plot. Useful when only the output file is desired    |
+| --output          | -o            | String | Output file where the plot should be stored. Will be stored in png format |
+| --training-only   | -to           | Flag   | Plots only the training cost                                              |
+| --validation-only | -vo           | Flag   | Plots only the validation cost                                            |
 
 
 ## Technologies
