@@ -1,8 +1,13 @@
+import matplotlib.pyplot as plt
+
+
+
 # Argument parser
 import argparse
 # filesystem stuf
 import os
 import sys
+
 
 
 # ################ #
@@ -18,6 +23,11 @@ if(not os.path.exists(arguments.results)):
     print("'%s' not found" % arguments.results)
     sys.exit()
 
+
+
+# ############ #
+# File Parsing #
+# ############ #
 
 epochs = []
 training_cost = []
@@ -35,3 +45,28 @@ for line in result_file.readlines()[1:]:
     validation_cost.append(float(vc))
 
 result_file.close()
+
+
+
+# ######## #
+# Plotting #
+# ######## #
+
+# training data results
+plt.plot(epochs, training_cost, label="Training Data")
+# validation data results
+plt.plot(epochs, validation_cost, label="Validation Data")
+
+# labels
+plt.xlabel('Epoch')
+plt.ylabel('Cost')
+
+# legend
+plt.legend()
+
+
+# save it
+plt.savefig("result_plot.png")
+
+# show it
+plt.show()
