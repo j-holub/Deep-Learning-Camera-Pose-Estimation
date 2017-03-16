@@ -4,6 +4,26 @@ Camera Pose Estimation originally based on Kalman Filter, using Deep Learning an
 
 Based on the work of [Jason Rambach](https://av.dfki.de/members/rambach/).
 
+
+# Usage
+
+The program requires two input files, one holding the **imu measurements** and another one holding the **ground truth** data.
+
+
+```
+python network.py <imu_output> <ground_truth>
+```
+
+## Options
+
+| Option         | Short Version | Type    | Meaning                                                               |
+|----------------|---------------|---------|-----------------------------------------------------------------------|
+| --batch-size   | -bs           | Integer | The Batch Size                                                        |
+| --display-step | -ds           | Integer | How often the intermediate results should be output. Each ds-th epoch |
+| --epochs       | -ep           | Integer | How many epochs to train                                              |
+| --output       | -o            | String  | File to write the output to                                           |
+
+
 ## Technologies
 
 This software is based on the [TensorFlow](https://www.tensorflow.org) Deep Learning Framework.
