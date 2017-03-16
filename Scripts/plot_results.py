@@ -16,6 +16,10 @@ import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument("results", help="Outputfile produced by the network")
+parser.add_argument("-o", "--output", help="Outputs the plot as a png file")
+parser.add_argument("-nd", "--no-display", help="Does not display the plot", action='store_true')
+parser.add_argument("-to", "--training-only", help="Only plots the training cost", action='store_true')
+parser.add_argument("-vo", "--validation-only", help="Only plots the validation cost", action='store_true')
 arguments = parser.parse_args()
 
 # check if the results file exists
@@ -53,9 +57,11 @@ result_file.close()
 # ######## #
 
 # training data results
-plt.plot(epochs, training_cost, label="Training Data")
+if(not arguments.validation_only):
+    plt.plot(epochs, training_cost, label="Training Data")
 # validation data results
-plt.plot(epochs, validation_cost, label="Validation Data")
+if(not arguments.training_only):
+    plt.plot(epochs, validation_cost, label="Validation Data")
 
 # labels
 plt.xlabel('Epoch')
@@ -66,7 +72,9 @@ plt.legend()
 
 
 # save it
-plt.savefig("result_plot.png")
+if(arguments.output):
+    plt.savefig(arguments.output, format="png")
 
 # show it
-plt.show()
+if(not arguments.no_display):
+    plt.show()
