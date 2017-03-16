@@ -128,7 +128,7 @@ with tf.Session() as sess:
 
     output_file.write("Epoch, Training Cost, Validation Cost\n")
 
-    for epoch in range(epochs):
+    for epoch in range(epochs+1):
 
         # train with all the training data
         while(data.training_data_available()):
