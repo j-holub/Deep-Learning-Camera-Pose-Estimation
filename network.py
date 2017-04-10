@@ -48,6 +48,7 @@ parser.add_argument("--epochs", "-ep", default=100, help="Number of epochs to tr
 parser.add_argument("--display_step", "-ds", default=10, help="How often intermediate results should be output")
 parser.add_argument("--batch_size", "-bs", default=20, help="Batch Size for training")
 parser.add_argument("--output", "-o")
+parser.add_argument("--model_output", "-mo")
 
 arguments = parser.parse_args()
 
@@ -80,6 +81,14 @@ if(arguments.output):
         os.mkdir(path)
 
     output_file = open(arguments.output, "w")
+
+
+if(arguments.model_output):
+    # base path
+    path = os.path.dirname(arguments.model_output)
+    # create the path if it does not exist
+    if(not os.path.exists(path)):
+        os.mkdir(path)
 
 
 # #### #
@@ -119,6 +128,13 @@ validation_cost = tf.reduce_sum(tf.pow(output - estimate, 2)) / (2 * data.valida
 # initialize session
 init = tf.global_variables_initializer()
 
+
+# load the saver if model is to be saved
+if(arguments.model_output):
+    saver = tf.train.Saver()
+
+
+
 # training loop
 with tf.Session() as sess:
     sess.run(init)
@@ -151,6 +167,11 @@ with tf.Session() as sess:
             print("%d: %f, %f" % (epoch, training_cost, validation_test_cost))
             if(arguments.output):
                 output_file.write("%d, %f, %f\n" % (epoch, training_cost, validation_test_cost))
+
+
+    if(arguments.model_output):
+        save_path = saver.save(sess, os.path.abspath(arguments.model_output))
+        print("Saved model to '%s'" % save_path)
 
 
     print("Finished training")
