@@ -9,3 +9,6 @@ data/
 
 # Testscript
 test.py
+
+# Results
+results/
