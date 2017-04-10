@@ -126,7 +126,8 @@ with tf.Session() as sess:
     print("Starting training with %d training samples, %d epochs and a batch size of %d" % (data.training_data_size(), epochs, batch_size))
     print("Epoch: Training Cost, Validation Cost")
 
-    output_file.write("Epoch, Training Cost, Validation Cost\n")
+    if(arguments.output):
+        output_file.write("Epoch, Training Cost, Validation Cost\n")
 
     for epoch in range(epochs+1):
 
