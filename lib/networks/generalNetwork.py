@@ -12,7 +12,7 @@ import numpy as np
 #
 #   Output Layer             7
 
-def network(input_tensor):
+def Network(input_tensor):
 
     input_size = int(input_tensor.get_shape()[1])
 

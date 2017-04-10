@@ -8,9 +8,9 @@ import os
 import sys
 
 # DataHandler
-import dataHandler
+from lib.dataHandler.dataHandler import DataHandler
 # Network
-import networkStructure
+from lib.networks.generalNetwork import Network
 
 
 # ########### #
@@ -87,7 +87,7 @@ if(arguments.output):
 # #### #
 
 # set up the data
-data = dataHandler.DataHandler(arguments.IMU_Data, arguments.Ground_Truth, batch_size)
+data = DataHandler(arguments.IMU_Data, arguments.Ground_Truth, batch_size)
 
 
 # ####### #
@@ -98,7 +98,7 @@ data = dataHandler.DataHandler(arguments.IMU_Data, arguments.Ground_Truth, batch
 network_input = tf.placeholder(tf.float64, shape=[None, data.input_size()])
 
 # output from the network described in networkStructure.py
-output = networkStructure.network(network_input)
+output = Network(network_input)
 
 
 # estimation
