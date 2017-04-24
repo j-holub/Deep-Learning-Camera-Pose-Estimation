@@ -137,8 +137,11 @@ class DataHandler:
         # drop the last one
         read_values = read_values[:-1]
 
-        print(len(read_ground_truth))
-        print(len(read_values))
+        for i in range(0, len(read_values)):
+            read_values[i] = np.append(read_values[i], quanterionInfo[i])
+
+
+
 
 
 
@@ -158,7 +161,6 @@ class DataHandler:
                 # append them to  the filtered version
                 read_values_filtered.append(read_values[i])
                 read_ground_truth_filtered.append(read_ground_truth[i])
-
 
 
         # ####################### #
