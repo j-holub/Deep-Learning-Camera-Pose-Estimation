@@ -94,7 +94,6 @@ class DataHandler:
         self.avrg_number_of_measurements = int(np.around(np.mean(measurement_sizes)) * 6)
 
 
-
         # ############################# #
         # prepare the ground_truth file #
         # ############################# #
@@ -137,11 +136,9 @@ class DataHandler:
         # drop the last one
         read_values = read_values[:-1]
 
+        # append the quantierion information to the input
         for i in range(0, len(read_values)):
             read_values[i] = np.append(read_values[i], quanterionInfo[i])
-
-
-
 
 
 
@@ -151,11 +148,11 @@ class DataHandler:
         # remove entries that are longer or shorter than the average
         for i in range(len(read_values)):
             # only use measurements with enough values
-            if(len(read_values[i])-7 >= self.avrg_number_of_measurements):
+            if(len(read_values[i])-4 >= self.avrg_number_of_measurements):
 
-                # trim the array if it is too long, leaving the last 7 (past pose) in tact
-                if(len(read_values[i])-7 > self.avrg_number_of_measurements):
-                    delete_indeces = np.arange(len(read_values[i]) - self.avrg_number_of_measurements - 7) + self.avrg_number_of_measurements
+                # trim the array if it is too long, leaving the last 4 (quanterion information) in tact
+                if(len(read_values[i])-4 > self.avrg_number_of_measurements):
+                    delete_indeces = np.arange(len(read_values[i]) - self.avrg_number_of_measurements - 4) + self.avrg_number_of_measurements
                     read_values[i] = np.delete(read_values[i], delete_indeces)
 
                 # append them to  the filtered version
@@ -198,7 +195,7 @@ class DataHandler:
 
         # data matrix
         data   = self.training_data[self.batch_pointer : upperbound]
-        data   = np.reshape(data, [temp_batch_size, self.avrg_number_of_measurements+7])
+        data   = np.reshape(data, [temp_batch_size, self.avrg_number_of_measurements+4])
 
         # label matrix
         labels = self.training_ground_truth[self.batch_pointer : upperbound]
@@ -217,7 +214,7 @@ class DataHandler:
     # returns the size of the data (#meassurements*6 + 7)
     # return type: int
     def input_size(self):
-        return self.avrg_number_of_measurements+7
+        return self.avrg_number_of_measurements+4
 
     # ------------- #
     # Training Data #
@@ -227,7 +224,7 @@ class DataHandler:
     # return type: (nparray(size, 67), nparray(size, 7))
     def full_training_data(self):
 
-        data = np.reshape(self.training_data, [len(self.training_data), self.avrg_number_of_measurements+7])
+        data = np.reshape(self.training_data, [len(self.training_data), self.avrg_number_of_measurements+4])
         labels = np.reshape(self.training_ground_truth, [len(self.training_ground_truth), 7])
 
         return (data, labels)
@@ -252,7 +249,7 @@ class DataHandler:
     # return type: (nparray(size, 67), nparray(size, 7))
     def full_validation_data(self):
 
-        data = np.reshape(self.validation_data, [len(self.validation_data), self.avrg_number_of_measurements+7])
+        data = np.reshape(self.validation_data, [len(self.validation_data), self.avrg_number_of_measurements+4])
         labels = np.reshape(self.validation_ground_truth, [len(self.validation_ground_truth), 7])
 
         return (data, labels)
