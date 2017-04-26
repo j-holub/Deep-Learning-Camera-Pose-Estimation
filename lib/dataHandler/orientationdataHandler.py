@@ -110,7 +110,7 @@ class DataHandler:
             # add the ground_truth to the labels
             read_ground_truth.append(np.asarray(ground_truth))
 
-
+        print(read_ground_truth[:5])
 
         # ################ #
         # Process the Data #
@@ -124,12 +124,8 @@ class DataHandler:
         # create the displacement information
         read_ground_truth = []
         for i in range(0, len(positions)-1):
-            gt = []
-            # displacement
-            gt = positions[i+1] - positions[i]
-            # quanterionInfo
-            gt = np.append(gt, quanterionInfo[i+1])
-            # gt = [x, y, z, q_0, q_1, q_2, q_3]
+            gt = quanterionInfo[i+1]
+
             read_ground_truth.append(gt)
 
 
@@ -199,7 +195,7 @@ class DataHandler:
 
         # label matrix
         labels = self.training_ground_truth[self.batch_pointer : upperbound]
-        labels = np.reshape(labels, [temp_batch_size, 7])
+        labels = np.reshape(labels, [temp_batch_size, 4])
 
         self.batch_pointer += self.batch_size
 
@@ -225,7 +221,7 @@ class DataHandler:
     def full_training_data(self):
 
         data = np.reshape(self.training_data, [len(self.training_data), self.avrg_number_of_measurements+4])
-        labels = np.reshape(self.training_ground_truth, [len(self.training_ground_truth), 7])
+        labels = np.reshape(self.training_ground_truth, [len(self.training_ground_truth), 4])
 
         return (data, labels)
 
@@ -250,7 +246,7 @@ class DataHandler:
     def full_validation_data(self):
 
         data = np.reshape(self.validation_data, [len(self.validation_data), self.avrg_number_of_measurements+4])
-        labels = np.reshape(self.validation_ground_truth, [len(self.validation_ground_truth), 7])
+        labels = np.reshape(self.validation_ground_truth, [len(self.validation_ground_truth), 4])
 
         return (data, labels)
 
