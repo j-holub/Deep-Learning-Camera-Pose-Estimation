@@ -8,9 +8,9 @@ import os
 import sys
 
 # DataHandler
-from lib.dataHandler.orientationdataHandler import DataHandler
+from lib.dataHandler.displacementDataHandler import DataHandler
 # Network
-from lib.networks.orientationNetwork import Network
+from lib.networks.displacementNetwork import Network
 
 
 # ########### #
@@ -111,7 +111,7 @@ output = Network(network_input)
 
 
 # estimation
-estimate = tf.placeholder(tf.float64, shape=[None, 4])
+estimate = tf.placeholder(tf.float64, shape=[None, 3])
 
 # --- network --- #
 
