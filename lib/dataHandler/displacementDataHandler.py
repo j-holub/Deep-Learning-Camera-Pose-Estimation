@@ -110,7 +110,6 @@ class DataHandler:
             # add the ground_truth to the labels
             read_ground_truth.append(np.asarray(ground_truth))
 
-
         # ################ #
         # Process the Data #
         # ################ #
@@ -123,8 +122,8 @@ class DataHandler:
         # create the displacement information
         read_ground_truth = []
         for i in range(0, len(positions)-1):
-            gt = quanterionInfo[i+1]
-
+            # displacement
+            gt = positions[i+1] - positions[i]
             read_ground_truth.append(gt)
 
 
@@ -145,7 +144,7 @@ class DataHandler:
             # only use measurements with enough values
             if(len(read_values[i])-4 >= self.avrg_number_of_measurements):
 
-                # trim the array if it is too long, leaving the last 4 (quanterion information) in tact
+                # trim the array if it is too long, leaving the last 4 (quantierion) in tact
                 if(len(read_values[i])-4 > self.avrg_number_of_measurements):
                     delete_indeces = np.arange(len(read_values[i]) - self.avrg_number_of_measurements - 4) + self.avrg_number_of_measurements
                     read_values[i] = np.delete(read_values[i], delete_indeces)
@@ -194,7 +193,7 @@ class DataHandler:
 
         # label matrix
         labels = self.training_ground_truth[self.batch_pointer : upperbound]
-        labels = np.reshape(labels, [temp_batch_size, 4])
+        labels = np.reshape(labels, [temp_batch_size, 3])
 
         self.batch_pointer += self.batch_size
 
@@ -220,7 +219,7 @@ class DataHandler:
     def full_training_data(self):
 
         data = np.reshape(self.training_data, [len(self.training_data), self.avrg_number_of_measurements+4])
-        labels = np.reshape(self.training_ground_truth, [len(self.training_ground_truth), 4])
+        labels = np.reshape(self.training_ground_truth, [len(self.training_ground_truth), 3])
 
         return (data, labels)
 
@@ -245,7 +244,7 @@ class DataHandler:
     def full_validation_data(self):
 
         data = np.reshape(self.validation_data, [len(self.validation_data), self.avrg_number_of_measurements+4])
-        labels = np.reshape(self.validation_ground_truth, [len(self.validation_ground_truth), 4])
+        labels = np.reshape(self.validation_ground_truth, [len(self.validation_ground_truth), 3])
 
         return (data, labels)
 
