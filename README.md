@@ -11,7 +11,7 @@ The program requires two input files, one holding the **imu measurements** and a
 
 
 ```
-python network.py <imu_output> <ground_truth>
+python <network_version.py> <imu_output> <ground_truth>
 ```
 
 ## Options
@@ -39,14 +39,34 @@ python plot_results.py <outputfile>
 | Option            | Short Version | Type   | Meaning                                                                   |
 |-------------------|---------------|--------|---------------------------------------------------------------------------|
 | --no-display      | -nd           | Flag   | Does not display the plot. Useful when only the output file is desired    |
-| --output          | -o            | String | Output file where the plot should be stored. Will be stored in png format |
+| --output          | -o            | String | Output file where the plot should be stored.Will be stored in png format |
 | --training-only   | -to           | Flag   | Plots only the training cost                                              |
 | --validation-only | -vo           | Flag   | Plots only the validation cost                                            |
+| --model-output    | -mo           | Flag   | Output file where the model should be stored
+|
 
 
 ## Technologies
 
 This software is based on the [TensorFlow](https://www.tensorflow.org) Deep Learning Framework.
+
+Unfortunately TensorFlows API has changed a lot here and there, sometimes documented often enough undocumented. That's why it may run with some version and won't with some others.
+
+The version you will install depends on what OS and what distribution you use. It won't work with the latest **1.1** version but should work with something like **0.9**.
+
+If you have veresion **0.10.0** you can easily run the code when you change the line 
+
+```
+init = tf.global_variables_initializer()
+``` 
+
+to
+
+```
+init= tf.initialize_all_varibles()
+```
+
+The latter is deprecated and no more available in later version, but the new version might not be available yet in an older version (like **0.10.0**).
 
 ## Literature
 
